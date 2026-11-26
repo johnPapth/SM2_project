@@ -18,7 +18,7 @@ def rot_matrix_y(rad):
     ])
 
 class Leg3D:
-    def __init__(self,leg:str,l1:float=1.0,l2:float=4.0,l3:float=4.0,):
+    def __init__(self,leg:str,l1:float=0.1,l2:float=0.4,l3:float=0.4,):
         if leg == "left":
             self.leg = 1
         elif leg == "right":
@@ -61,6 +61,8 @@ class Leg3D:
         theta1 = np.arctan2(z,y) + np.arctan2(np.sqrt(clamped_subroot),self.leg*self.l1)
         z_rotated = - y * np.sin(theta1) + z * np.cos(theta1)
         r_sq = x**2 + z_rotated**2
+        if r_sq < eps:
+            raise ValueError("r_sq is too small, infinite solutions because of joint alignment")
         C = (self.l3**2 - self.l2**2 - r_sq) / (2* self.l2)
     
         subroot = r_sq - C**2
@@ -75,9 +77,12 @@ class Leg3D:
         
 
 if __name__ == '__main__':
-    #v_max = 0.75 #m/s
-    #z0 = 0.85*(l2+l3) #Standing height
-    leg1 = Leg3D(leg="right")
+    v_max = 0.75 #m/s
+    l1=0.1
+    l2=0.4
+    l3=0.4
+    z0 = 0.85*(l2+l3) #Standing height
+    leg1 = Leg3D(leg="right",l1=l1,l2=l2,l3=l3)
     target = np.array([0.5,-1,-6])
     thetas = leg1.inverse_kinematics(target)
     recovered = leg1.forward_kinematics(thetas)
