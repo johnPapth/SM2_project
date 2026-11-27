@@ -118,8 +118,8 @@ def foot_trajectory(phi = 0,v = 0.75, T = 0.6, beta = 0.5, H = 0.1, z0 = 0.68, y
     return normalized_cords
 
 
-def update(frame):
-    current = cordinates[frame]
+def update(frame, cords, artist):
+    current = cords[frame]
     xs, ys, zs = current[:, 0], current[:, 1], current[:, 2]
     artist.set_data_3d(xs,ys,zs)
 
@@ -156,5 +156,5 @@ if __name__ == '__main__':
     ax.plot_surface(X, Y, Z, alpha=0.2, color="black")
 
 
-    anim = FuncAnimation(fig, update, frames=N, interval=17, blit=False)
+    anim = FuncAnimation(fig, update, frames=N, fargs=(cordinates, artist), interval=17, blit=False)
     plt.show()
